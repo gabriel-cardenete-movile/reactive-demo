@@ -30,7 +30,6 @@ public class KafkaConsumer {
         .flatMap(url -> headRequestToUrl(url))
         .filter(headers -> headers.getFirst(HttpHeaders.CONTENT_TYPE).contains("image/"))
         .doOnNext(headers -> log.info("Image URL headers: {}", headers))
-        .doOnError(error -> log.error("Error during URL fetch", error))
         .subscribe();
   }
 
@@ -40,7 +39,9 @@ public class KafkaConsumer {
         .uri(url)
         .retrieve()
         .toBodilessEntity()
-        .map(response -> response.getHeaders());
+        .map(response -> response.getHeaders())
+        .doOnError(error -> log.error("Error during URL fetch", error))
+        .onErrorResume(error -> Mono.empty());
   }
 
 }

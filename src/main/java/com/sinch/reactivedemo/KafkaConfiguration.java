@@ -1,7 +1,6 @@
 package com.sinch.reactivedemo;
 
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -17,14 +16,12 @@ public class KafkaConfiguration {
 
   @Bean
   public ReceiverOptions<String, String> receiverOptions(KafkaProperties kafkaProperties) {
-
     ReceiverOptions<String, String> receiverOptions =
         ReceiverOptions.create(kafkaProperties.buildConsumerProperties());
 
     return receiverOptions
-        .subscription(List.of("test.topic"))
-        .consumerProperty(
-            ConsumerConfig.GROUP_ID_CONFIG, "test-group-id")
+        .subscription(List.of("url.topic"))
+        .consumerProperty(ConsumerConfig.GROUP_ID_CONFIG, "test-group-id")
         .withKeyDeserializer(new StringDeserializer())
         .withValueDeserializer(new StringDeserializer());
   }
